@@ -2,6 +2,7 @@
 #include "BossFightCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GA_EquipSword.h"
+#include "Abilities/GA_LightAttack_Sword.h"
 #include "Abilities/GA_UnEquipSword.h"
 
 void AMasterWeaponCollectible::Interact(ABossFightCharacter* Character)
@@ -14,6 +15,7 @@ void AMasterWeaponCollectible::Interact(ABossFightCharacter* Character)
 			AbilitySystemComponent->TryActivateAbility(AbilitySpecHandle, true);
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(UGA_EquipSword::StaticClass()));
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(UGA_UnEquipSword::StaticClass()));
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(UGA_LightAttack_Sword::StaticClass()));
 		}
 	}
 

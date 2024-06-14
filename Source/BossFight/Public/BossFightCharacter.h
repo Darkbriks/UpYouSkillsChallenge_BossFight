@@ -27,10 +27,12 @@ class ABossFightCharacter : public ACharacter, public IWeaponWielderInterface
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USphereComponent* InteractionSphere;
-	
+
+
+	////////// Input //////////
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
@@ -49,12 +51,20 @@ class ABossFightCharacter : public ACharacter, public IWeaponWielderInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* LightAttackAction;
+
+	////////// Animations //////////
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animations, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* EquipSwordMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animations, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* UnEquipSwordMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animations, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* LightAttackMontage;
+
+	////////// Abilities //////////
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
 	class UAbilitySystemComponent* AbilitySystemComponent;
 
@@ -95,6 +105,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Weapons")
 	void Equip();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void Attack(bool bIsLightAttack);
+
 public:
 	ABossFightCharacter();
 	
@@ -106,6 +119,9 @@ public:
 
 	virtual void UnEquipWeapon();
 	void UnEquipWeapon_Implementation() override { UnEquipWeapon(); }
+
+	virtual void LightAttack();
+	void LightAttack_Implementation() override { LightAttack(); }
 	
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }

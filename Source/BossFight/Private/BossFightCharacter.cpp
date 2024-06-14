@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GA_EquipSword.h"
+#include "Abilities/GA_LightAttack_Sword.h"
 #include "Abilities/GA_UnEquipSword.h"
 #include "Interfaces/InteractionInterface.h"
 #include "Weapons/MasterWeapon.h"
@@ -69,6 +70,7 @@ void ABossFightCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABossFightCharacter::Look);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABossFightCharacter::Interact);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &ABossFightCharacter::Equip);
+		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Started, this, &ABossFightCharacter::Attack, true);
 	}
 	else
 	{
@@ -158,10 +160,7 @@ void ABossFightCharacter::Look(const FInputActionValue& Value)
 
 void ABossFightCharacter::Interact()
 {
-	if (Interactable != nullptr)
-	{
-		Interactable->Execute_Interact(Interactable->_getUObject(), this);
-	}
+	if (Interactable != nullptr) { Interactable->Execute_Interact(Interactable->_getUObject(), this); }
 }
 
 void ABossFightCharacter::Equip()
@@ -170,6 +169,14 @@ void ABossFightCharacter::Equip()
 	{
 		if (bIsEquipped) { AbilitySystemComponent->TryActivateAbilityByClass(UGA_UnEquipSword::StaticClass()); }
 		else { AbilitySystemComponent->TryActivateAbilityByClass(UGA_EquipSword::StaticClass()); }
+	}
+}
+
+void ABossFightCharacter::Attack(bool bIsLightAttack)
+{
+	if (AbilitySystemComponent && bIsEquipped)
+	{
+		if (bIsLightAttack) { AbilitySystemComponent->TryActivateAbilityByClass(UGA_LightAttack_Sword::StaticClass()); }
 	}
 }
 
@@ -191,4 +198,9 @@ void ABossFightCharacter::EquipWeapon()
 void ABossFightCharacter::UnEquipWeapon()
 {
 	if (PossessedWeapon) { PlayMontage(UnEquipSwordMontage); }
+}
+
+void ABossFightCharacter::LightAttack()
+{
+	if (PossessedWeapon) { PlayMontage(LightAttackMontage); }
 }
