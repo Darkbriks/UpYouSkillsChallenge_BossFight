@@ -54,16 +54,6 @@ class ABossFightCharacter : public ACharacter, public IWeaponWielderInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LightAttackAction;
 
-	////////// Animations //////////
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animations, meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* EquipSwordMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animations, meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* UnEquipSwordMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animations, meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* LightAttackMontage;
-
 	////////// Abilities //////////
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
 	class UAbilitySystemComponent* AbilitySystemComponent;
@@ -87,13 +77,6 @@ protected:
 
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	////////// Montages //////////
-	UFUNCTION()
-	void PlayMontage(UAnimMontage* Montage);
-
-	UFUNCTION()
-	void OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 	
 	////////// Abilities //////////
 	void Move(const FInputActionValue& Value);
@@ -106,23 +89,25 @@ protected:
 	void Equip();
 
 	UFUNCTION(BlueprintCallable, Category = "Weapons")
-	void Attack(bool bIsLightAttack);
+	void LightAttack();
 
 public:
 	ABossFightCharacter();
+
+	UFUNCTION()
+	void OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
+	////////// WeaponWielderInterface //////////
+	virtual AMasterWeapon* GetWeapon() { if (PossessedWeapon) { return PossessedWeapon; } return nullptr; }
+	AMasterWeapon* GetWeapon_Implementation() override { return GetWeapon(); }
 	
 	virtual void CollectWeapon(AMasterWeapon* Weapon);
 	void CollectWeapon_Implementation(AMasterWeapon* Weapon) override { CollectWeapon(Weapon); }
 
-	virtual void EquipWeapon();
-	void EquipWeapon_Implementation() override { EquipWeapon(); }
+	virtual void PlayMontage(UAnimMontage* Montage);
+	void PlayMontage_Implementation(UAnimMontage* Montage) override { PlayMontage(Montage); }
 
-	virtual void UnEquipWeapon();
-	void UnEquipWeapon_Implementation() override { UnEquipWeapon(); }
-
-	virtual void LightAttack();
-	void LightAttack_Implementation() override { LightAttack(); }
-	
+	////////// Getters //////////
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE USphereComponent* GetInteractionSphere() const { return InteractionSphere; }

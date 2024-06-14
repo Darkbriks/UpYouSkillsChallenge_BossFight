@@ -3,6 +3,8 @@
 #include "BossFightCharacter.h"
 #include "Abilities/Effects/GE_EquipSword.h"
 
+#include "Weapons/MasterWeapon.h"
+
 UGA_EquipSword::UGA_EquipSword()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.Weapon.Sword.Equip")));
@@ -19,7 +21,10 @@ void UGA_EquipSword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		if (IWeaponWielderInterface* WeaponWielderInterface = Cast<IWeaponWielderInterface>(ActorInfo->AvatarActor))
 		{
-			WeaponWielderInterface->Execute_EquipWeapon(WeaponWielderInterface->_getUObject());
+			if (AMasterWeapon* Weapon = WeaponWielderInterface->Execute_GetWeapon(WeaponWielderInterface->_getUObject()))
+			{
+				WeaponWielderInterface->Execute_PlayMontage(WeaponWielderInterface->_getUObject(), Weapon->GetEquipMontage());
+			}
 		}
 	}
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);

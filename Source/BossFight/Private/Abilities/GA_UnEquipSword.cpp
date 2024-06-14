@@ -2,6 +2,8 @@
 #include "GameplayTagContainer.h"
 #include "BossFightCharacter.h"
 
+#include "Weapons/MasterWeapon.h"
+
 UGA_UnEquipSword::UGA_UnEquipSword()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.Weapon.Sword.UnEquip")));
@@ -16,7 +18,10 @@ void UGA_UnEquipSword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		BP_RemoveGameplayEffectFromOwnerWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Equipped"))));
 		if (IWeaponWielderInterface* WeaponWielderInterface = Cast<IWeaponWielderInterface>(ActorInfo->AvatarActor))
 		{
-			WeaponWielderInterface->Execute_UnEquipWeapon(WeaponWielderInterface->_getUObject());
+			if (AMasterWeapon* Weapon = WeaponWielderInterface->Execute_GetWeapon(WeaponWielderInterface->_getUObject()))
+			{
+				WeaponWielderInterface->Execute_PlayMontage(WeaponWielderInterface->_getUObject(), Weapon->GetUnEquipMontage());
+			}
 		}
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}

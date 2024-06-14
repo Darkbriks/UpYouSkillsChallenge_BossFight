@@ -14,14 +14,11 @@ class IWeaponWielderInterface
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
+	class AMasterWeapon* GetWeapon();
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
 	void CollectWeapon(class AMasterWeapon* Weapon);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
-	void EquipWeapon();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
-	void UnEquipWeapon();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
-	void LightAttack();
+	void PlayMontage(class UAnimMontage* Montage);
 };

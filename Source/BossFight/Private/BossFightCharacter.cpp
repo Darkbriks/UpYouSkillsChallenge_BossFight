@@ -10,9 +10,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "AbilitySystemComponent.h"
-#include "Abilities/GA_EquipSword.h"
-#include "Abilities/GA_LightAttack_Sword.h"
-#include "Abilities/GA_UnEquipSword.h"
 #include "Interfaces/InteractionInterface.h"
 #include "Weapons/MasterWeapon.h"
 
@@ -70,7 +67,7 @@ void ABossFightCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABossFightCharacter::Look);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABossFightCharacter::Interact);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Started, this, &ABossFightCharacter::Equip);
-		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Started, this, &ABossFightCharacter::Attack, true);
+		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Started, this, &ABossFightCharacter::LightAttack);
 	}
 	else
 	{
@@ -108,28 +105,6 @@ void ABossFightCharacter::OnEndOverlap(UPrimitiveComponent* OverlappedComponent,
 	}
 }
 
-////////// Montages //////////
-void ABossFightCharacter::PlayMontage(UAnimMontage* Montage)
-{
-	if (Montage && GetMesh())
-	{
-		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
-		{
-			AnimInstance->Montage_Play(Montage);
-			AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &ABossFightCharacter::OnNotifyBegin);
-		}
-	}
-}
-
-void ABossFightCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
-{
-	if (NotifyName == FName("AttachWeaponToHand")) { PossessedWeapon->AttachToHand(GetMesh(), TEXT("hand_r")); }
-	else if (NotifyName == FName("AttachWeaponToSheith")) { PossessedWeapon->AttachToSheith(GetMesh(), TEXT("Socket_SwordSheith")); }
-	else if (NotifyName == FName("DetachWeapon")) { PossessedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); }
-	else if (NotifyName == FName("EquipWeapon")) { bIsEquipped = true; }
-	else if (NotifyName == FName("UnEquipWeapon")) { bIsEquipped = false; }
-}
-
 ////////// Abilities //////////
 void ABossFightCharacter::Move(const FInputActionValue& Value)
 {
@@ -165,19 +140,12 @@ void ABossFightCharacter::Interact()
 
 void ABossFightCharacter::Equip()
 {
-	if (AbilitySystemComponent)
-	{
-		if (bIsEquipped) { AbilitySystemComponent->TryActivateAbilityByClass(UGA_UnEquipSword::StaticClass()); }
-		else { AbilitySystemComponent->TryActivateAbilityByClass(UGA_EquipSword::StaticClass()); }
-	}
+	if (PossessedWeapon && AbilitySystemComponent) { PossessedWeapon->Equip(AbilitySystemComponent, bIsEquipped); }
 }
 
-void ABossFightCharacter::Attack(bool bIsLightAttack)
+void ABossFightCharacter::LightAttack()
 {
-	if (AbilitySystemComponent && bIsEquipped)
-	{
-		if (bIsLightAttack) { AbilitySystemComponent->TryActivateAbilityByClass(UGA_LightAttack_Sword::StaticClass()); }
-	}
+	if (AbilitySystemComponent && bIsEquipped) { PossessedWeapon->LightAttack(AbilitySystemComponent); }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -187,20 +155,26 @@ void ABossFightCharacter::CollectWeapon(AMasterWeapon* Weapon)
 {
 	if (PossessedWeapon) { PossessedWeapon->Destroy(); }
 	PossessedWeapon = Weapon;
-	PossessedWeapon->AttachToSheith(GetMesh(), TEXT("Socket_SwordSheith"));
+	PossessedWeapon->AttachToSheith(GetMesh());
 }
 
-void ABossFightCharacter::EquipWeapon()
+void ABossFightCharacter::PlayMontage(UAnimMontage* Montage)
 {
-	if (PossessedWeapon) { PlayMontage(EquipSwordMontage); }
+	if (Montage && GetMesh())
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(Montage);
+			AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &ABossFightCharacter::OnNotifyBegin);
+		}
+	}
 }
 
-void ABossFightCharacter::UnEquipWeapon()
+void ABossFightCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
-	if (PossessedWeapon) { PlayMontage(UnEquipSwordMontage); }
-}
-
-void ABossFightCharacter::LightAttack()
-{
-	if (PossessedWeapon) { PlayMontage(LightAttackMontage); }
+	if (NotifyName == FName("AttachWeaponToHand")) { PossessedWeapon->AttachToHand(GetMesh()); }
+	else if (NotifyName == FName("AttachWeaponToSheith")) { PossessedWeapon->AttachToSheith(GetMesh()); }
+	else if (NotifyName == FName("DetachWeapon")) { PossessedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); }
+	else if (NotifyName == FName("EquipWeapon")) { bIsEquipped = true; }
+	else if (NotifyName == FName("UnEquipWeapon")) { bIsEquipped = false; }
 }
