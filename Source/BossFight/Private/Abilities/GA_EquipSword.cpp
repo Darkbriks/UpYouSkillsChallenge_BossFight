@@ -1,18 +1,14 @@
 #include "Abilities/GA_EquipSword.h"
 #include "GameplayTagContainer.h"
 #include "BossFightCharacter.h"
-#include "UObject/ConstructorHelpers.h"
-
+#include "Abilities/Effects/GE_EquipSword.h"
 
 UGA_EquipSword::UGA_EquipSword()
 {
-	static ConstructorHelpers::FClassFinder<UGameplayEffect> Effect(TEXT("/Game/BossFight/Content/Blueprint/Abilities/Effects/GE_EquipSword"));
-	if (Effect.Succeeded()) { GameplayEffectClass = Effect.Class; }
-	
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.Weapon.Sword.Equip")));
 	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword")));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Equipped")));
-	CostGameplayEffectClass = this->GameplayEffectClass;
+	CostGameplayEffectClass = UGE_EquipSword::StaticClass();
 }
 
 void UGA_EquipSword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
