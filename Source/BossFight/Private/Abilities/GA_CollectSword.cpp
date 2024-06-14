@@ -1,13 +1,15 @@
 #include "Abilities/GA_CollectSword.h"
 #include "GameplayTagContainer.h"
 #include "BossFightCharacter.h"
-#include "Abilities/Effects/GE_CollectSword.h"
 #include "Weapons/MasterWeapon.h"
 
 UGA_CollectSword::UGA_CollectSword()
 {
+	static ConstructorHelpers::FClassFinder<UGameplayEffect> Effect(TEXT("/Game/BossFight/Content/Blueprint/Abilities/Effects/GE_CollectSword"));
+	if (Effect.Succeeded()) { GameplayEffectClass = Effect.Class; }
+	
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword")));
-	CostGameplayEffectClass = UGE_CollectSword::StaticClass();
+	CostGameplayEffectClass = this->GameplayEffectClass;
 }
 
 void UGA_CollectSword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

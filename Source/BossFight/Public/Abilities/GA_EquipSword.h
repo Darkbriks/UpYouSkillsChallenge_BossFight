@@ -9,6 +9,10 @@ class BOSSFIGHT_API UGA_EquipSword : public UGameplayAbility
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> GameplayEffectClass = nullptr;
+
 public:
 	UGA_EquipSword();
 

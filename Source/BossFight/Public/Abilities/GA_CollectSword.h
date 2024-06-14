@@ -13,6 +13,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AMasterWeapon> WeaponToAttachClass = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayEffect> GameplayEffectClass = nullptr;
+
 public:
 	UGA_CollectSword();
 

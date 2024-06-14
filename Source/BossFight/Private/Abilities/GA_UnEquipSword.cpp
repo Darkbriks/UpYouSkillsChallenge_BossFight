@@ -1,7 +1,6 @@
 #include "Abilities/GA_UnEquipSword.h"
 #include "GameplayTagContainer.h"
 #include "BossFightCharacter.h"
-#include "Abilities/Effects/GE_CollectSword.h"
 
 UGA_UnEquipSword::UGA_UnEquipSword()
 {
