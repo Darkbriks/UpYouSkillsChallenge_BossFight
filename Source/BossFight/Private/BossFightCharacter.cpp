@@ -53,6 +53,9 @@ ABossFightCharacter::ABossFightCharacter()
 	InteractionSphere->OnComponentEndOverlap.AddDynamic(this, &ABossFightCharacter::OnEndOverlap);
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	
+	GetMesh()->ComponentTags.Add(FName("HitDetection"));
+	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,6 +91,14 @@ void ABossFightCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	for (TSubclassOf<UGameplayAbility> Ability : DefaultAbilities)
+	{
+		if (AbilitySystemComponent && Ability)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0));
+		}
+	}
 }
 
 void ABossFightCharacter::SetAnimWeaponType(TEnumAsByte<EWeaponType> WeaponType)
@@ -96,7 +107,6 @@ void ABossFightCharacter::SetAnimWeaponType(TEnumAsByte<EWeaponType> WeaponType)
 	{
 		if (AnimInstance->GetClass()->ImplementsInterface(UCharactersAnimationInterface::StaticClass()))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Weapon Type: %s"), *UEnum::GetValueAsString(WeaponType.GetValue())));
 			ICharactersAnimationInterface::Execute_SetWeaponType(AnimInstance, WeaponType);
 		}
 	}
@@ -169,7 +179,14 @@ void ABossFightCharacter::CollectWeapon(AMasterWeapon* Weapon)
 {
 	if (PossessedWeapon) { PossessedWeapon->Destroy(); }
 	PossessedWeapon = Weapon;
+	PossessedWeapon->SetWielder(this);
 	PossessedWeapon->AttachToSheith(GetMesh());
+}
+
+void ABossFightCharacter::Hit()
+{
+	if (PossessedWeapon) { PlayMontage(PossessedWeapon->GetHitReactionMontage()); }
+	else { PlayMontage(DefaultHitMontage); }
 }
 
 void ABossFightCharacter::PlayMontage(UAnimMontage* Montage)
@@ -191,4 +208,6 @@ void ABossFightCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointN
 	else if (NotifyName == FName("DetachWeapon")) { PossessedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); }
 	else if (NotifyName == FName("EquipWeapon")) { bIsEquipped = true; SetAnimWeaponType(PossessedWeapon->GetWeaponType()); }
 	else if (NotifyName == FName("UnEquipWeapon")) { bIsEquipped = false; SetAnimWeaponType(EWeaponType::UNARMED); }
+	else if (NotifyName == FName("StartHitDetection")) { PossessedWeapon->StartHitDetection(); }
+	else if (NotifyName == FName("StopHitDetection")) { PossessedWeapon->StopHitDetection(); }
 }

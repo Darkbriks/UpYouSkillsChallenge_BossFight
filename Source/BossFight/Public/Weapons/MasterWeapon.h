@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "MasterWeapon.generated.h"
 
+class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UGameplayAbility;
 class UAnimMontage;
@@ -19,6 +20,12 @@ class BOSSFIGHT_API AMasterWeapon : public AActor
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UCapsuleComponent* HitDetection;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	AActor* Wielder;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
@@ -46,6 +53,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayAbility> LightAttackAbility;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UGameplayAbility> HitReactionAbility;
+
 	////////// Animations //////////
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* EquipMontage;
@@ -56,8 +66,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* LightAttackMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* HitReactionMontage;
+
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnHitDetectionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:
 	AMasterWeapon();
+
+	AActor* GetWielder() const { return Wielder; }
+	void SetWielder(AActor* NewWielder) { Wielder = NewWielder; }
 
 	void AttachToSheith(USkeletalMeshComponent* SkeletalMesh);
 	void AttachToHand(USkeletalMeshComponent* SkeletalMesh);
@@ -69,4 +90,8 @@ public:
 	UAnimMontage* GetEquipMontage() const { return EquipMontage; }
 	UAnimMontage* GetUnEquipMontage() const { return UnEquipMontage; }
 	UAnimMontage* GetLightAttackMontage() const { return LightAttackMontage; }
+	UAnimMontage* GetHitReactionMontage() const { return HitReactionMontage; }
+
+	void StartHitDetection();
+	void StopHitDetection();
 };

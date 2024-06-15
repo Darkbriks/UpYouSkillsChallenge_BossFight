@@ -7,6 +7,7 @@
 UGA_CollectSword::UGA_CollectSword()
 {
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("React")));
 	CostGameplayEffectClass = UGE_CollectSword::StaticClass();
 }
 

@@ -10,7 +10,8 @@ UGA_LightAttack_Sword::UGA_LightAttack_Sword()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.LightAttack.Sword")));
 	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Equipped")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Attack")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Attack")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("React")));
 }
 
 void UGA_LightAttack_Sword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

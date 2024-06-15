@@ -10,6 +10,7 @@ UGA_EquipSword::UGA_EquipSword()
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.Weapon.Sword.Equip")));
 	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword")));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Equipped")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("React")));
 	CostGameplayEffectClass = UGE_EquipSword::StaticClass();
 }
 

@@ -20,5 +20,8 @@ public:
 	void CollectWeapon(class AMasterWeapon* Weapon);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
+	void Hit();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Weapon")
 	void PlayMontage(class UAnimMontage* Montage);
 };

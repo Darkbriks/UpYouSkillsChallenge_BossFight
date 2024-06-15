@@ -60,6 +60,12 @@ class ABossFightCharacter : public ACharacter, public IWeaponWielderInterface
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
 	class UAbilitySystemComponent* AbilitySystemComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* DefaultHitMontage;
+
 protected:
 	IInteractionInterface* Interactable;
 
@@ -107,6 +113,9 @@ public:
 	
 	virtual void CollectWeapon(AMasterWeapon* Weapon);
 	void CollectWeapon_Implementation(AMasterWeapon* Weapon) override { CollectWeapon(Weapon); }
+
+	virtual void Hit();
+	void Hit_Implementation() override { Hit(); }
 
 	virtual void PlayMontage(UAnimMontage* Montage);
 	void PlayMontage_Implementation(UAnimMontage* Montage) override { PlayMontage(Montage); }

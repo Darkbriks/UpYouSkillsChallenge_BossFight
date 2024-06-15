@@ -8,6 +8,7 @@ UGA_UnEquipSword::UGA_UnEquipSword()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.Weapon.Sword.UnEquip")));
 	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Equipped")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("React")));
 }
 
 void UGA_UnEquipSword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

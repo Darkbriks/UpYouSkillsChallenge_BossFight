@@ -1,7 +1,11 @@
 #include "Weapons/MasterWeapon.h"
-#include "Abilities/GA_EquipSword.h"
-#include "Abilities/GA_UnEquipSword.h"
 #include "AbilitySystemComponent.h"
+
+#include "Abilities/GA_HitReaction_Sword.h"
+
+#include "Components/CapsuleComponent.h"
+
+#include "Interfaces/WeaponWielderInterface.h"
 
 AMasterWeapon::AMasterWeapon()
 {
@@ -12,6 +16,32 @@ AMasterWeapon::AMasterWeapon()
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
+
+	HitDetection = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitDetection"));
+	HitDetection->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HitDetection->SetupAttachment(Mesh);
+}
+
+void AMasterWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HitDetection->OnComponentBeginOverlap.AddDynamic(this, &AMasterWeapon::OnHitDetectionOverlapBegin);
+}
+
+void AMasterWeapon::OnHitDetectionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!OtherComp->ComponentHasTag(FName("HitDetection"))) { return; }
+	if (UAbilitySystemComponent* AbilitySystemComponent = Cast<UAbilitySystemComponent>(OtherActor->GetComponentByClass(UAbilitySystemComponent::StaticClass())))
+	{
+		if (AbilitySystemComponent->GetOwner() != Wielder)
+		{
+			if (IWeaponWielderInterface* WeaponWielderInterface = Cast<IWeaponWielderInterface>(Wielder))
+			{
+				AbilitySystemComponent->TryActivateAbilityByClass(HitReactionAbility);
+			}
+		}
+	}
 }
 
 void AMasterWeapon::AttachToSheith(USkeletalMeshComponent* SkeletalMesh)
@@ -41,4 +71,14 @@ void AMasterWeapon::LightAttack(UAbilitySystemComponent* AbilitySystemComponent)
 	{
 		AbilitySystemComponent->TryActivateAbilityByClass(LightAttackAbility);
 	}
+}
+
+void AMasterWeapon::StartHitDetection()
+{
+	HitDetection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void AMasterWeapon::StopHitDetection()
+{
+	HitDetection->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
