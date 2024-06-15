@@ -9,6 +9,10 @@ class BOSSFIGHT_API UGA_LightAttack_Sword : public UGameplayAbility
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability")
+	TSubclassOf<UGameplayEffect> AttackEffect;
+
 public:
 	UGA_LightAttack_Sword();
 	

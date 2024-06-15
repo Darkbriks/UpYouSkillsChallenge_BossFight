@@ -1,10 +1,6 @@
 #include "Weapons/MasterWeapon.h"
 #include "AbilitySystemComponent.h"
-
-#include "Abilities/GA_HitReaction_Sword.h"
-
 #include "Components/CapsuleComponent.h"
-
 #include "Interfaces/WeaponWielderInterface.h"
 
 AMasterWeapon::AMasterWeapon()
@@ -41,6 +37,17 @@ void AMasterWeapon::OnHitDetectionOverlapBegin(UPrimitiveComponent* OverlappedCo
 				AbilitySystemComponent->TryActivateAbilityByClass(HitReactionAbility);
 			}
 		}
+	}
+}
+
+void AMasterWeapon::SetWielder(AActor* NewWielder)
+{
+	Wielder = NewWielder;
+	if (UAbilitySystemComponent* AbilitySystemComponent = Cast<UAbilitySystemComponent>(Wielder->GetComponentByClass(UAbilitySystemComponent::StaticClass())))
+	{
+		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(EquipAbility));
+		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(UnEquipAbility));
+		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(LightAttackAbility));
 	}
 }
 

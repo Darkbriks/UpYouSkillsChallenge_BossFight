@@ -78,13 +78,13 @@ public:
 	AMasterWeapon();
 
 	AActor* GetWielder() const { return Wielder; }
-	void SetWielder(AActor* NewWielder) { Wielder = NewWielder; }
+	void SetWielder(AActor* NewWielder);
 
 	void AttachToSheith(USkeletalMeshComponent* SkeletalMesh);
 	void AttachToHand(USkeletalMeshComponent* SkeletalMesh);
 
 	void Equip(class UAbilitySystemComponent* AbilitySystemComponent, bool bIsEquipped);
-	void LightAttack(class UAbilitySystemComponent* AbilitySystemComponent);
+	void LightAttack(UAbilitySystemComponent* AbilitySystemComponent);
 
 	TEnumAsByte<EWeaponType> GetWeaponType() const { return WeaponType; }
 	UAnimMontage* GetEquipMontage() const { return EquipMontage; }

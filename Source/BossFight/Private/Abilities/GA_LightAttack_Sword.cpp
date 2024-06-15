@@ -10,14 +10,14 @@ UGA_LightAttack_Sword::UGA_LightAttack_Sword()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Input.LightAttack.Sword")));
 	ActivationRequiredTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Equipped")));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Sword.Attack")));
+	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Weapon.Attack")));
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("React")));
 }
 
 void UGA_LightAttack_Sword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
+	
 	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		if (IWeaponWielderInterface* WeaponWielderInterface = Cast<IWeaponWielderInterface>(ActorInfo->AvatarActor))
@@ -25,7 +25,7 @@ void UGA_LightAttack_Sword::ActivateAbility(const FGameplayAbilitySpecHandle Han
 			if (AMasterWeapon* Weapon = WeaponWielderInterface->Execute_GetWeapon(WeaponWielderInterface->_getUObject()))
 			{
 				WeaponWielderInterface->Execute_PlayMontage(WeaponWielderInterface->_getUObject(), Weapon->GetLightAttackMontage());
-				ApplyGameplayEffectToOwner(Handle, ActorInfo, ActivationInfo, NewObject<UGE_Attack>(), 1);
+				//ApplyGameplayEffectToOwner(Handle, ActorInfo, ActivationInfo, AttackEffect.GetDefaultObject(), 1);
 			}
 		}
 	}

@@ -17,7 +17,6 @@ void UGA_HitReaction_Sword::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Hit"));
 		if (IWeaponWielderInterface* WeaponWielderInterface = Cast<IWeaponWielderInterface>(ActorInfo->AvatarActor))
 		{
 			WeaponWielderInterface->Execute_Hit(WeaponWielderInterface->_getUObject());

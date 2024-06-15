@@ -10,10 +10,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "AbilitySystemComponent.h"
-
 #include "Interfaces/CharactersAnimationInterface.h"
 #include "Interfaces/InteractionInterface.h"
 #include "Weapons/MasterWeapon.h"
+#include "BaseActorAttributes.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -92,12 +92,14 @@ void ABossFightCharacter::BeginPlay()
 		}
 	}
 
-	for (TSubclassOf<UGameplayAbility> Ability : DefaultAbilities)
+	if (AbilitySystemComponent)
 	{
-		if (AbilitySystemComponent && Ability)
+		for (TSubclassOf<UGameplayAbility> Ability : DefaultAbilities)
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0));
+			if (Ability){ AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0)); }
 		}
+
+		ActorAttributes = AbilitySystemComponent->GetSet<UBaseActorAttributes>();
 	}
 }
 
@@ -169,7 +171,10 @@ void ABossFightCharacter::Equip()
 
 void ABossFightCharacter::LightAttack()
 {
-	if (AbilitySystemComponent && bIsEquipped) { PossessedWeapon->LightAttack(AbilitySystemComponent); }
+	if (AbilitySystemComponent && bIsEquipped)
+	{
+		PossessedWeapon->LightAttack(AbilitySystemComponent);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -67,6 +67,9 @@ class ABossFightCharacter : public ACharacter, public IWeaponWielderInterface
 	UAnimMontage* DefaultHitMontage;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor Attributes", meta = (AllowPrivateAccess = "true"))
+	const class UBaseActorAttributes* ActorAttributes;
+	
 	IInteractionInterface* Interactable;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapons", meta = (AllowPrivateAccess = "true"))

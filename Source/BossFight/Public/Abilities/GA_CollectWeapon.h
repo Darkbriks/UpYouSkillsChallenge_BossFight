@@ -2,19 +2,22 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "GA_CollectSword.generated.h"
+#include "Weapons/MasterWeapon.h"
+#include "GA_CollectWeapon.generated.h"
 
 UCLASS()
-class BOSSFIGHT_API UGA_CollectSword : public UGameplayAbility
+class BOSSFIGHT_API UGA_CollectWeapon : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class AMasterWeapon> WeaponToAttachClass = nullptr;
+	TSubclassOf<AMasterWeapon> WeaponToAttachClass = nullptr;
 
 public:
-	UGA_CollectSword();
+	UGA_CollectWeapon();
+
+	AMasterWeapon* GetWeaponToAttach() const { return WeaponToAttachClass.GetDefaultObject(); }
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
