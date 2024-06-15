@@ -10,6 +10,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "AbilitySystemComponent.h"
+
+#include "Interfaces/CharactersAnimationInterface.h"
 #include "Interfaces/InteractionInterface.h"
 #include "Weapons/MasterWeapon.h"
 
@@ -84,6 +86,18 @@ void ABossFightCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+}
+
+void ABossFightCharacter::SetAnimWeaponType(TEnumAsByte<EWeaponType> WeaponType)
+{
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		if (AnimInstance->GetClass()->ImplementsInterface(UCharactersAnimationInterface::StaticClass()))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Weapon Type: %s"), *UEnum::GetValueAsString(WeaponType.GetValue())));
+			ICharactersAnimationInterface::Execute_SetWeaponType(AnimInstance, WeaponType);
 		}
 	}
 }
@@ -175,6 +189,6 @@ void ABossFightCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointN
 	if (NotifyName == FName("AttachWeaponToHand")) { PossessedWeapon->AttachToHand(GetMesh()); }
 	else if (NotifyName == FName("AttachWeaponToSheith")) { PossessedWeapon->AttachToSheith(GetMesh()); }
 	else if (NotifyName == FName("DetachWeapon")) { PossessedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); }
-	else if (NotifyName == FName("EquipWeapon")) { bIsEquipped = true; }
-	else if (NotifyName == FName("UnEquipWeapon")) { bIsEquipped = false; }
+	else if (NotifyName == FName("EquipWeapon")) { bIsEquipped = true; SetAnimWeaponType(PossessedWeapon->GetWeaponType()); }
+	else if (NotifyName == FName("UnEquipWeapon")) { bIsEquipped = false; SetAnimWeaponType(EWeaponType::UNARMED); }
 }

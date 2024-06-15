@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums/WeaponType.h"
 #include "GameFramework/Actor.h"
 #include "MasterWeapon.generated.h"
 
@@ -15,11 +16,14 @@ class BOSSFIGHT_API AMasterWeapon : public AActor
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TEnumAsByte<EWeaponType> WeaponType = SWORD;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	FTransform SheithOffset;
 
@@ -38,7 +42,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayAbility> UnEquipAbility;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameplayAbility> LightAttackAbility;
 
@@ -52,7 +56,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* LightAttackMontage;
 
-public:	
+public:
 	AMasterWeapon();
 
 	void AttachToSheith(USkeletalMeshComponent* SkeletalMesh);
@@ -61,6 +65,7 @@ public:
 	void Equip(class UAbilitySystemComponent* AbilitySystemComponent, bool bIsEquipped);
 	void LightAttack(class UAbilitySystemComponent* AbilitySystemComponent);
 
+	TEnumAsByte<EWeaponType> GetWeaponType() const { return WeaponType; }
 	UAnimMontage* GetEquipMontage() const { return EquipMontage; }
 	UAnimMontage* GetUnEquipMontage() const { return UnEquipMontage; }
 	UAnimMontage* GetLightAttackMontage() const { return LightAttackMontage; }

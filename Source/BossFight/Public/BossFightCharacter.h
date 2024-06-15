@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Interfaces/WeaponWielderInterface.h"
+#include "Enums/WeaponType.h"
 #include "BossFightCharacter.generated.h"
 
 class AMasterWeapon;
@@ -13,6 +14,7 @@ class UCameraComponent;
 class USphereComponent;
 class UInputMappingContext;
 class UInputAction;
+struct FBranchingPointNotifyPayload;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -70,6 +72,8 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual void BeginPlay();
+
+	void SetAnimWeaponType(TEnumAsByte<EWeaponType> WeaponType);
 
 	////////// Overlap //////////
 	UFUNCTION()
