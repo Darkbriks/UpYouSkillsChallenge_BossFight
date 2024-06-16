@@ -13,6 +13,5 @@ void AMasterWeaponCollectible::Interact(ABossFightCharacter* Character)
 			AbilitySystemComponent->TryActivateAbility(AbilitySpecHandle, true);
 		}
 	}
-
 	Destroy();
 }
