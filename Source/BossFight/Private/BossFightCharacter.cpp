@@ -9,11 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "AbilitySystemComponent.h"
-#include "Interfaces/CharactersAnimationInterface.h"
 #include "Interfaces/InteractionInterface.h"
-#include "Weapons/MasterWeapon.h"
-#include "BaseActorAttributes.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -51,17 +47,11 @@ ABossFightCharacter::ABossFightCharacter()
 	InteractionSphere->SetupAttachment(RootComponent);
 	InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &ABossFightCharacter::OnBeginOverlap);
 	InteractionSphere->OnComponentEndOverlap.AddDynamic(this, &ABossFightCharacter::OnEndOverlap);
-
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	
-	GetMesh()->ComponentTags.Add(FName("HitDetection"));
-	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
 //////////////////////////////////////////////////////////////////////////
 /// Protected
 //////////////////////////////////////////////////////////////////////////
-
 void ABossFightCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
@@ -89,27 +79,6 @@ void ABossFightCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
-
-	if (AbilitySystemComponent)
-	{
-		for (TSubclassOf<UGameplayAbility> Ability : DefaultAbilities)
-		{
-			if (Ability){ AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0)); }
-		}
-
-		ActorAttributes = AbilitySystemComponent->GetSet<UBaseActorAttributes>();
-	}
-}
-
-void ABossFightCharacter::SetAnimWeaponType(TEnumAsByte<EWeaponType> WeaponType)
-{
-	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
-	{
-		if (AnimInstance->GetClass()->ImplementsInterface(UCharactersAnimationInterface::StaticClass()))
-		{
-			ICharactersAnimationInterface::Execute_SetWeaponType(AnimInstance, WeaponType);
 		}
 	}
 }
@@ -162,57 +131,4 @@ void ABossFightCharacter::Look(const FInputActionValue& Value)
 void ABossFightCharacter::Interact()
 {
 	if (Interactable != nullptr) { Interactable->Execute_Interact(Interactable->_getUObject(), this); }
-}
-
-void ABossFightCharacter::Equip()
-{
-	if (PossessedWeapon && AbilitySystemComponent) { PossessedWeapon->Equip(AbilitySystemComponent, bIsEquipped); }
-}
-
-void ABossFightCharacter::LightAttack()
-{
-	if (AbilitySystemComponent && bIsEquipped)
-	{
-		PossessedWeapon->LightAttack(AbilitySystemComponent);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-/// Public
-//////////////////////////////////////////////////////////////////////////
-void ABossFightCharacter::CollectWeapon(AMasterWeapon* Weapon)
-{
-	if (PossessedWeapon) { PossessedWeapon->Destroy(); }
-	PossessedWeapon = Weapon;
-	PossessedWeapon->SetWielder(this);
-	PossessedWeapon->AttachToSheith(GetMesh());
-}
-
-void ABossFightCharacter::Hit()
-{
-	if (PossessedWeapon) { PlayMontage(PossessedWeapon->GetHitReactionMontage()); }
-	else { PlayMontage(DefaultHitMontage); }
-}
-
-void ABossFightCharacter::PlayMontage(UAnimMontage* Montage)
-{
-	if (Montage && GetMesh())
-	{
-		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
-		{
-			AnimInstance->Montage_Play(Montage);
-			AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &ABossFightCharacter::OnNotifyBegin);
-		}
-	}
-}
-
-void ABossFightCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
-{
-	if (NotifyName == FName("AttachWeaponToHand")) { PossessedWeapon->AttachToHand(GetMesh()); }
-	else if (NotifyName == FName("AttachWeaponToSheith")) { PossessedWeapon->AttachToSheith(GetMesh()); }
-	else if (NotifyName == FName("DetachWeapon")) { PossessedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform); }
-	else if (NotifyName == FName("EquipWeapon")) { bIsEquipped = true; SetAnimWeaponType(PossessedWeapon->GetWeaponType()); }
-	else if (NotifyName == FName("UnEquipWeapon")) { bIsEquipped = false; SetAnimWeaponType(EWeaponType::UNARMED); }
-	else if (NotifyName == FName("StartHitDetection")) { PossessedWeapon->StartHitDetection(); }
-	else if (NotifyName == FName("StopHitDetection")) { PossessedWeapon->StopHitDetection(); }
 }

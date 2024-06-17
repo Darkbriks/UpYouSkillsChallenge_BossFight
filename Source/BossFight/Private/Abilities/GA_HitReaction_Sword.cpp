@@ -2,8 +2,6 @@
 #include "GameplayTagContainer.h"
 #include "Abilities/Effects/GE_React.h"
 #include "Interfaces/WeaponWielderInterface.h"
-#include "Weapons/MasterWeapon.h"
-
 
 UGA_HitReaction_Sword::UGA_HitReaction_Sword()
 {

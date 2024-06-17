@@ -1,7 +1,6 @@
 #include "Abilities/GA_UnEquipSword.h"
 #include "GameplayTagContainer.h"
-#include "BossFightCharacter.h"
-
+#include "WeaponWielderCharacter.h"
 #include "Weapons/MasterWeapon.h"
 
 UGA_UnEquipSword::UGA_UnEquipSword()
@@ -26,9 +25,4 @@ void UGA_UnEquipSword::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		}
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
-}
-
-void UGA_UnEquipSword::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
-{
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

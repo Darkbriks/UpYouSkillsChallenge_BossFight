@@ -2,7 +2,6 @@
 #include "GameplayTagContainer.h"
 #include "BossFightCharacter.h"
 #include "Abilities/Effects/GE_EquipSword.h"
-
 #include "Weapons/MasterWeapon.h"
 
 UGA_EquipSword::UGA_EquipSword()
