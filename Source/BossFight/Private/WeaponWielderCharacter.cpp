@@ -78,7 +78,7 @@ void AWeaponWielderCharacter::CollectWeapon(AMasterWeapon* Weapon)
 {
 	if (PossessedWeapon) { PossessedWeapon->Destroy(); }
 	PossessedWeapon = Weapon;
-	PossessedWeapon->SetWielder(this);
+	PossessedWeapon->SetWielder(GetAbilitySystemComponent());
 	PossessedWeapon->AttachToSheith(GetMesh());
 }
 

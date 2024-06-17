@@ -13,5 +13,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<class UGameplayAbility> AbilityClass = nullptr;
 	
-	void Interact(ABossFightCharacter* Character) override;
+	void Interact(UAbilitySystemComponent* AbilitySystemComponent) override;
 };

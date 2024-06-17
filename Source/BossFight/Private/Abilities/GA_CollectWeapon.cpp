@@ -27,8 +27,3 @@ void UGA_CollectWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
-
-void UGA_CollectWeapon::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
-{
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}

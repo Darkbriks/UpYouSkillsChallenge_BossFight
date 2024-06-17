@@ -30,24 +30,21 @@ void AMasterWeapon::OnHitDetectionOverlapBegin(UPrimitiveComponent* OverlappedCo
 	if (!OtherComp->ComponentHasTag(FName("HitDetection"))) { return; }
 	if (UAbilitySystemComponent* AbilitySystemComponent = Cast<UAbilitySystemComponent>(OtherActor->GetComponentByClass(UAbilitySystemComponent::StaticClass())))
 	{
-		if (AbilitySystemComponent->GetOwner() != Wielder)
+		if (AbilitySystemComponent != Wielder)
 		{
-			if (IWeaponWielderInterface* WeaponWielderInterface = Cast<IWeaponWielderInterface>(Wielder))
-			{
-				AbilitySystemComponent->TryActivateAbilityByClass(HitReactionAbility);
-			}
+			AbilitySystemComponent->TryActivateAbilityByClass(HitReactionAbility);
 		}
 	}
 }
 
-void AMasterWeapon::SetWielder(AActor* NewWielder)
+void AMasterWeapon::SetWielder(UAbilitySystemComponent* NewWielder)
 {
-	Wielder = NewWielder;
-	if (UAbilitySystemComponent* AbilitySystemComponent = Cast<UAbilitySystemComponent>(Wielder->GetComponentByClass(UAbilitySystemComponent::StaticClass())))
+	if (NewWielder)
 	{
-		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(EquipAbility));
-		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(UnEquipAbility));
-		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(LightAttackAbility));
+		Wielder = NewWielder;
+		Wielder->GiveAbility(FGameplayAbilitySpec(EquipAbility));
+		Wielder->GiveAbility(FGameplayAbilitySpec(UnEquipAbility));
+		Wielder->GiveAbility(FGameplayAbilitySpec(LightAttackAbility));
 	}
 }
 

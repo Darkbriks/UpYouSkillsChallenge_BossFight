@@ -130,5 +130,5 @@ void ABossFightCharacter::Look(const FInputActionValue& Value)
 
 void ABossFightCharacter::Interact()
 {
-	if (Interactable != nullptr) { Interactable->Execute_Interact(Interactable->_getUObject(), this); }
+	if (Interactable != nullptr) { Interactable->Execute_Interact(Interactable->_getUObject(), GetAbilitySystemComponent()); }
 }

@@ -12,7 +12,7 @@ AMasterCollectible::AMasterCollectible()
 	RootComponent = SphereComponent;
 }
 
-void AMasterCollectible::Interact(ABossFightCharacter* Character)
+void AMasterCollectible::Interact(UAbilitySystemComponent* AbilitySystemComponent)
 {
 	Destroy();
 }

@@ -5,7 +5,7 @@
 #include "Interfaces/InteractionInterface.h"
 #include "MasterCollectible.generated.h"
 
-class ABossFightCharacter;
+class UAbilitySystemComponent;
 class USphereComponent;
 
 UCLASS()
@@ -19,6 +19,6 @@ class BOSSFIGHT_API AMasterCollectible : public AActor, public IInteractionInter
 public:	
 	AMasterCollectible();
 	
-	virtual void Interact(ABossFightCharacter* Character);
-	void Interact_Implementation(ABossFightCharacter* Character) override { Interact(Character); }
+	virtual void Interact(UAbilitySystemComponent* AbilitySystemComponent);
+	void Interact_Implementation(UAbilitySystemComponent* AbilitySystemComponent) override { Interact(AbilitySystemComponent); }
 };

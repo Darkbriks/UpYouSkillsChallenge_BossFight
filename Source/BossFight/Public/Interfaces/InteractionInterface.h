@@ -14,5 +14,5 @@ class IInteractionInterface
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-	void Interact(class ABossFightCharacter* Character);
+	void Interact(class UAbilitySystemComponent* AbilitySystemComponent);
 };

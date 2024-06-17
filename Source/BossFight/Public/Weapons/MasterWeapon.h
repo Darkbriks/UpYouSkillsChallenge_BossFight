@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "MasterWeapon.generated.h"
 
+class UAbilitySystemComponent;
 class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UGameplayAbility;
@@ -25,7 +26,7 @@ class BOSSFIGHT_API AMasterWeapon : public AActor
 	UCapsuleComponent* HitDetection;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	AActor* Wielder;
+	UAbilitySystemComponent* Wielder;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
@@ -77,13 +78,13 @@ protected:
 public:
 	AMasterWeapon();
 
-	AActor* GetWielder() const { return Wielder; }
-	void SetWielder(AActor* NewWielder);
+	UAbilitySystemComponent* GetWielder() const { return Wielder; }
+	void SetWielder(UAbilitySystemComponent* NewWielder);
 
 	void AttachToSheith(USkeletalMeshComponent* SkeletalMesh);
 	void AttachToHand(USkeletalMeshComponent* SkeletalMesh);
 
-	void Equip(class UAbilitySystemComponent* AbilitySystemComponent, bool bIsEquipped);
+	void Equip(UAbilitySystemComponent* AbilitySystemComponent, bool bIsEquipped);
 	void LightAttack(UAbilitySystemComponent* AbilitySystemComponent);
 
 	TEnumAsByte<EWeaponType> GetWeaponType() const { return WeaponType; }
